@@ -1,4 +1,5 @@
 import "server-only";
+import { connection } from "next/server";
 import { cache } from "react";
 import { getSupabasePublicEnv } from "@/lib/supabase/env";
 import { createClient } from "@/lib/supabase/server";
@@ -11,6 +12,9 @@ import type { CurrentUser, Organization, Profile } from "./types";
  */
 export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {
   if (!getSupabasePublicEnv()) return null;
+  // The session is per request: never part of a prerendered shell. supabase-js reads the clock
+  // while loading the session, which Cache Components rejects during prerendering.
+  await connection();
   const supabase = await createClient();
   const { data: claimsData } = await supabase.auth.getClaims();
   const claims = claimsData?.claims;
