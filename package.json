@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:e2e:auth": "playwright test -c playwright.auth.config.ts",
+    "test:db": "./scripts/db/test-local.sh"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

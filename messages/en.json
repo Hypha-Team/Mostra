@@ -14,9 +14,7 @@
     "en": "English"
   },
   "Home": {
-    "name": "mostra",
-    "tagline": "The work of Belas-Artes students, in one place.",
-    "status": "Under construction · phase 0"
+    "name": "mostra"
   },
   "Tokens": {
     "title": "design system tokens",
@@ -41,5 +39,124 @@
   "NotFound": {
     "title": "page not found",
     "back": "back to home"
+  },
+  "Header": {
+    "home": "home",
+    "signIn": "sign in",
+    "account": "account",
+    "admin": "admin"
+  },
+  "Welcome": {
+    "line": "The work of Belas-Artes students, in one place.",
+    "enterUniversity": "enter with your university email",
+    "imOrganisation": "I'm a gallery, studio or organisation"
+  },
+  "SignIn": {
+    "title": "sign in",
+    "intro": "Use your student or staff email. We send you a sign-in link — there is no password.",
+    "orgTitle": "sign in as an organisation",
+    "orgIntro": "For galleries, studios, companies and recruiters. After signing in, register your organisation: the faculty approves it before you can post opportunities or send messages.",
+    "emailLabel": "email",
+    "nameLabel": "your name",
+    "consent": "I have read the <link>privacy notice</link> and agree to my data being processed to use mostra.",
+    "submit": "send sign-in link",
+    "sending": "sending…",
+    "sentTitle": "check your email",
+    "sentBody": "We sent a sign-in link to {email}. Open it in this same browser.",
+    "toOrganisation": "Are you a gallery, studio or organisation? Sign in here.",
+    "toUniversity": "Student or staff? Sign in with your university email.",
+    "errors": {
+      "invalidEmail": "Enter a valid email.",
+      "consent": "To continue, accept the privacy notice.",
+      "notUniversity": "This email is not from a recognised university domain. If you represent an organisation, use the organisation sign-in.",
+      "unavailable": "Sign-in is not available right now. Try again later.",
+      "sendFailed": "We could not send the email. Wait a moment and try again.",
+      "link": "The link expired or was already used. Ask for a new one."
+    }
+  },
+  "Account": {
+    "title": "my account",
+    "email": "email",
+    "roles": "roles",
+    "noRoles": "no role assigned",
+    "university": "university",
+    "verified": "verified",
+    "notVerified": "not verified",
+    "signOut": "sign out",
+    "loading": "loading…",
+    "demo": "demo",
+    "roleNames": {
+      "student": "student",
+      "alumni": "alumni",
+      "professor": "professor",
+      "partner": "partner",
+      "admin": "admin"
+    },
+    "organisation": "organisation",
+    "noOrganisation": "You have not registered your organisation yet.",
+    "registerOrganisation": "register organisation",
+    "status": {
+      "pending": "waiting for approval",
+      "approved": "approved",
+      "rejected": "not approved"
+    },
+    "pendingHelp": "The faculty team will review the request. Until then you cannot post opportunities or send messages.",
+    "adminLink": "approve organisations"
+  },
+  "OrganisationForm": {
+    "title": "register organisation",
+    "intro": "The faculty reviews these details before approval.",
+    "name": "organisation name",
+    "kind": "type",
+    "kinds": {
+      "gallery": "gallery",
+      "studio": "studio",
+      "company": "company",
+      "institution": "institution",
+      "association": "association"
+    },
+    "website": "website (optional)",
+    "nif": "tax number / NIF (optional)",
+    "submit": "send for approval",
+    "sending": "sending…",
+    "errors": {
+      "name": "Enter the organisation name.",
+      "kind": "Choose a type.",
+      "website": "The website must start with https://",
+      "failed": "Could not register. Try again."
+    }
+  },
+  "Admin": {
+    "title": "organisations",
+    "pending": "waiting for approval",
+    "decided": "recently decided",
+    "empty": "No organisation is waiting.",
+    "approve": "approve",
+    "reject": "reject",
+    "requested": "requested on {date}",
+    "kind": "type",
+    "website": "website",
+    "nif": "NIF",
+    "status": {
+      "pending": "waiting",
+      "approved": "approved",
+      "rejected": "rejected"
+    },
+    "kinds": {
+      "gallery": "gallery",
+      "studio": "studio",
+      "company": "company",
+      "institution": "institution",
+      "association": "association"
+    },
+    "demo": "demo"
+  },
+  "Privacy": {
+    "title": "privacy notice",
+    "draft": "Provisional version, to be reviewed by the faculty before public launch.",
+    "p1": "mostra stores your email, your name and the profile details you choose to fill in, the works you publish and the messages you send.",
+    "p2": "We use this data only to run the platform: showing works with the visibility you choose, connecting students with opportunities and letting people contact each other under the platform's rules.",
+    "p3": "We use no tracking cookies. You will be able to export or delete your account at any time.",
+    "back": "back"
   }
 }
