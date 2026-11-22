@@ -22,7 +22,7 @@ sql_paths = ["./seed/demo.sql"]
 [studio]
 enabled = false
 
-[inbucket]
+[local_smtp]
 enabled = true
 port = 54324
 

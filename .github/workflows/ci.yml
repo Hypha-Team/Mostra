@@ -84,9 +84,9 @@ jobs:
           set -a; . /tmp/sb.env; set +a
           {
             echo "NEXT_PUBLIC_SUPABASE_URL=$API_URL"
-            echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=$ANON_KEY"
+            echo "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=${PUBLISHABLE_KEY:-$ANON_KEY}"
             echo "SUPABASE_DB_URL=$DB_URL"
-            echo "MAILPIT_URL=${MAILPIT_URL:-${INBUCKET_URL:-http://127.0.0.1:54324}}"
+            echo "MAILPIT_URL=${MAILPIT_URL:-http://127.0.0.1:54324}"
           } >> "$GITHUB_ENV"
 
       - name: Test fixtures (university domains, test admin)
