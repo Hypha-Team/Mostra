@@ -34,6 +34,8 @@ test("sign-in: labelled fields, consent required, email validated", async ({ pag
   await page.getByLabel(/privacy notice/).check();
   await page.getByRole("button", { name: "send sign-in link" }).click();
   await expect(page.getByTestId("form-error")).toHaveText("Enter a valid email.");
+  await expect(page.getByLabel("email")).toHaveValue("not-an-email");
+  await expect(page.getByLabel(/privacy notice/)).toBeChecked();
 
   await page.getByLabel("email").fill("someone@example.com");
   await page.getByLabel(/privacy notice/).uncheck();

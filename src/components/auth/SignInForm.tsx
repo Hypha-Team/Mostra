@@ -44,6 +44,7 @@ export function SignInForm({ kind }: { kind: "university" | "partner" }) {
             id={nameId}
             name="full_name"
             autoComplete="name"
+            defaultValue={state.status === "error" ? state.fullName : undefined}
             className="min-h-11 rounded-md border border-chip-border bg-white px-3"
           />
         </div>
@@ -70,6 +71,7 @@ export function SignInForm({ kind }: { kind: "university" | "partner" }) {
           name="consent"
           type="checkbox"
           required
+          defaultChecked={state.status === "error" ? state.consent : undefined}
           aria-invalid={error === "consent" || undefined}
           className="mt-1 size-5 accent-ink"
         />

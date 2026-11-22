@@ -14,6 +14,7 @@ export function OrganisationForm() {
   );
   const ids = { name: useId(), kind: useId(), website: useId(), nif: useId(), error: useId() };
   const error = state.status === "error" ? state.error : null;
+  const values = state.status === "error" ? state.values : undefined;
   const field = "min-h-11 rounded-md border border-chip-border bg-white px-3";
 
   return (
@@ -23,13 +24,13 @@ export function OrganisationForm() {
         <label htmlFor={ids.name} className="small-label">
           {t("name")}
         </label>
-        <input id={ids.name} name="name" required className={field} aria-invalid={error === "name" || undefined} />
+        <input id={ids.name} name="name" required defaultValue={values?.name} className={field} aria-invalid={error === "name" || undefined} />
       </div>
       <div className="flex flex-col gap-2">
         <label htmlFor={ids.kind} className="small-label">
           {t("kind")}
         </label>
-        <select id={ids.kind} name="kind" required defaultValue="" className={field} aria-invalid={error === "kind" || undefined}>
+        <select key={values?.kind ?? ""} id={ids.kind} name="kind" required defaultValue={values?.kind ?? ""} className={field} aria-invalid={error === "kind" || undefined}>
           <option value="" disabled />
           {ORGANIZATION_KINDS.map((k) => (
             <option key={k} value={k}>
@@ -42,13 +43,13 @@ export function OrganisationForm() {
         <label htmlFor={ids.website} className="small-label">
           {t("website")}
         </label>
-        <input id={ids.website} name="website" type="url" inputMode="url" placeholder="https://" className={field} aria-invalid={error === "website" || undefined} />
+        <input id={ids.website} name="website" type="url" inputMode="url" placeholder="https://" defaultValue={values?.website} className={field} aria-invalid={error === "website" || undefined} />
       </div>
       <div className="flex flex-col gap-2">
         <label htmlFor={ids.nif} className="small-label">
           {t("nif")}
         </label>
-        <input id={ids.nif} name="nif" inputMode="numeric" className={field} />
+        <input id={ids.nif} name="nif" inputMode="numeric" defaultValue={values?.nif} className={field} />
       </div>
       {error && (
         <p id={ids.error} role="alert" className="text-sm text-pay-fee-fg" data-testid="form-error">

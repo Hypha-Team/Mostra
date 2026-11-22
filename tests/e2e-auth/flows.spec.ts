@@ -68,6 +68,9 @@ test("partner registers an organisation, admin approves it", async ({ browser },
   await partner.getByLabel("site (opcional)").fill("ftp://nope");
   await partner.getByRole("button", { name: "enviar para aprovação" }).click();
   await expect(partner.getByTestId("form-error")).toHaveText("O site deve começar por https://");
+  // nothing typed is lost after a validation error
+  await expect(partner.getByLabel("nome da organização")).toHaveValue(orgName);
+  await expect(partner.getByLabel("tipo")).toHaveValue("gallery");
   await partner.getByLabel("site (opcional)").fill("https://galeria.example");
   await partner.getByRole("button", { name: "enviar para aprovação" }).click();
   await expect(partner.getByTestId("form-error")).not.toHaveText("O site deve começar por https://");

@@ -15,6 +15,8 @@ export type LinkState =
       status: "error";
       error: "invalidEmail" | "consent" | "notUniversity" | "unavailable" | "sendFailed";
       email?: string;
+      consent?: boolean;
+      fullName?: string;
     };
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -32,16 +34,17 @@ async function sendLink(
   const locale = formData.get("locale");
   const fullName = String(formData.get("full_name") ?? "").trim();
 
-  if (!EMAIL_RE.test(email)) return { status: "error", error: "invalidEmail", email };
-  if (!consent) return { status: "error", error: "consent", email };
-  if (!getSupabasePublicEnv()) return { status: "error", error: "unavailable", email };
+  const keep = { email, consent, fullName };
+  if (!EMAIL_RE.test(email)) return { status: "error", error: "invalidEmail", ...keep };
+  if (!consent) return { status: "error", error: "consent", ...keep };
+  if (!getSupabasePublicEnv()) return { status: "error", error: "unavailable", ...keep };
 
   const supabase = await createClient();
 
   if (kind === "university") {
     const { data, error } = await supabase.rpc("email_signin_kind", { p_email: email });
-    if (error) return { status: "error", error: "unavailable", email };
-    if (data !== "university") return { status: "error", error: "notUniversity", email };
+    if (error) return { status: "error", error: "unavailable", ...keep };
+    if (data !== "university") return { status: "error", error: "notUniversity", ...keep };
   }
 
   const origin = await requestOrigin();
@@ -59,7 +62,7 @@ async function sendLink(
       },
     },
   });
-  if (error) return { status: "error", error: "sendFailed", email };
+  if (error) return { status: "error", error: "sendFailed", ...keep };
   return { status: "sent", email };
 }
 
@@ -77,9 +80,11 @@ export async function signOut(formData: FormData) {
   redirect(localePath(formData.get("locale"), "/"));
 }
 
+export type OrganisationValues = { name: string; kind: string; website: string; nif: string };
+
 export type OrganisationState =
   | { status: "idle" }
-  | { status: "error"; error: "name" | "kind" | "website" | "failed" };
+  | { status: "error"; error: "name" | "kind" | "website" | "failed"; values: OrganisationValues };
 
 export async function registerOrganisation(
   _prev: OrganisationState,
@@ -91,9 +96,11 @@ export async function registerOrganisation(
   const nif = String(formData.get("nif") ?? "").trim();
   const locale = formData.get("locale");
 
-  if (!name) return { status: "error", error: "name" };
-  if (!ORGANIZATION_KINDS.includes(kind)) return { status: "error", error: "kind" };
-  if (website && !/^https:\/\/\S+\.\S+/.test(website)) return { status: "error", error: "website" };
+  // React resets the form after an action: send the values back so nothing typed is lost.
+  const values = { name, kind, website, nif };
+  if (!name) return { status: "error", error: "name", values };
+  if (!ORGANIZATION_KINDS.includes(kind)) return { status: "error", error: "kind", values };
+  if (website && !/^https:\/\/\S+\.\S+/.test(website)) return { status: "error", error: "website", values };
 
   const supabase = await createClient();
   const { error } = await supabase.rpc("create_organization", {
@@ -104,7 +111,7 @@ export async function registerOrganisation(
   });
   if (error) {
     console.error("create_organization failed", { code: error.code, message: error.message });
-    return { status: "error", error: "failed" };
+    return { status: "error", error: "failed", values };
   }
 
   redirect(localePath(locale, "/account"));
