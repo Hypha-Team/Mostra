@@ -1,0 +1,140 @@
+@import "tailwindcss";
+
+/*
+ * mostra "white cube" design tokens (CLAUDE.md §6).
+ * Every colour used in the UI must come from here.
+ */
+@theme {
+  /* Neutrals */
+  --color-ground: #fafaf8;
+  --color-ink: #111111;
+  --color-label: #5f5f5f;
+  --color-secondary: #3a3a3a;
+  --color-line: #e6e5e0;
+  --color-chip-border: #dad9d4;
+  --color-panel: #f1f0eb;
+  --color-chip: #ecebe6;
+
+  /* Faculty magenta: one per screen, main action only. White text on it. */
+  --color-magenta: #d82e8a;
+
+  /* Trust marks only */
+  --color-verified: #1f5fa8;
+
+  /* Pay tags */
+  --color-pay-paid-bg: #e3eedf;
+  --color-pay-paid-fg: #24502a;
+  --color-pay-fee-bg: #f6e3d6;
+  --color-pay-fee-fg: #7a3410;
+  --color-pay-free-bg: #ecebe6;
+  --color-pay-free-fg: #111111;
+
+  /* Wanted materials */
+  --color-wanted-bg: #fbeaf3;
+  --color-wanted-fg: #8e1a58;
+
+  /* Type */
+  --font-sans: var(--font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    monospace;
+
+  --tracking-section: -0.025em;
+  --tracking-label: 0.08em;
+  --tracking-hint: 0.24em;
+
+  --radius-card: 3px;
+}
+
+@layer base {
+  html {
+    background-color: var(--color-ground);
+    color: var(--color-ink);
+  }
+
+  body {
+    background-color: var(--color-ground);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  /* Section titles: lowercase, 26–40px, 600, tight tracking */
+  .section-title {
+    font-size: clamp(26px, 3vw + 12px, 40px);
+    font-weight: 600;
+    letter-spacing: var(--tracking-section);
+    line-height: 1.05;
+    text-transform: lowercase;
+  }
+
+  /* Small caps labels: 11px, uppercase, 0.08em, label grey */
+  .small-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-label);
+    color: var(--color-label);
+  }
+
+  /* Mono-style hint/label (wall hint, detail label) */
+  .mono-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: var(--tracking-hint);
+    text-transform: lowercase;
+    opacity: 0.5;
+  }
+
+  .work-title {
+    font-style: italic;
+  }
+
+  /* Buttons: pills, 44px min height */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    padding: 0 1.25rem;
+    border-radius: 9999px;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1;
+    border: 1px solid transparent;
+    transition: opacity 120ms ease;
+  }
+  .btn:hover {
+    opacity: 0.88;
+  }
+  .btn-primary {
+    background-color: var(--color-magenta);
+    color: #ffffff;
+  }
+  .btn-secondary {
+    background-color: var(--color-ink);
+    color: var(--color-ground);
+  }
+  .btn-tertiary {
+    background-color: transparent;
+    color: var(--color-ink);
+    border-color: var(--color-ink);
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    min-height: 28px;
+    padding: 0 0.75rem;
+    border-radius: 9999px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+}
