@@ -70,6 +70,10 @@ test("partner registers an organisation, admin approves it", async ({ browser },
   await expect(partner.getByTestId("form-error")).toHaveText("O site deve começar por https://");
   await partner.getByLabel("site (opcional)").fill("https://galeria.example");
   await partner.getByRole("button", { name: "enviar para aprovação" }).click();
+  await expect(partner.getByTestId("form-error")).not.toHaveText("O site deve começar por https://");
+  if (await partner.getByTestId("form-error").isVisible()) {
+    throw new Error(`organisation form: ${await partner.getByTestId("form-error").textContent()}`);
+  }
 
   await expect(partner).toHaveURL(/\/account$/);
   await expect(partner.getByTestId("organisation-status")).toHaveAttribute("data-status", "pending");

@@ -102,7 +102,10 @@ export async function registerOrganisation(
     p_website: website || null,
     p_nif: nif || null,
   });
-  if (error) return { status: "error", error: "failed" };
+  if (error) {
+    console.error("create_organization failed", { code: error.code, message: error.message });
+    return { status: "error", error: "failed" };
+  }
 
   redirect(localePath(locale, "/account"));
 }
