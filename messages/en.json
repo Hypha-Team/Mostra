@@ -1,0 +1,45 @@
+{
+  "Metadata": {
+    "title": "mostra · Belas-Artes ULisboa",
+    "description": "Works, opportunities and projects by the students of the Faculty of Fine Arts, University of Lisbon."
+  },
+  "Brand": {
+    "facultyLogoAlt": "Faculty of Fine Arts, University of Lisbon",
+    "poweredBy": "powered by",
+    "hyphaLogoAlt": "HYPHA"
+  },
+  "LocaleSwitcher": {
+    "label": "Language",
+    "pt": "Português",
+    "en": "English"
+  },
+  "Home": {
+    "name": "mostra",
+    "tagline": "The work of Belas-Artes students, in one place.",
+    "status": "Under construction · phase 0"
+  },
+  "Tokens": {
+    "title": "design system tokens",
+    "colors": "colours",
+    "type": "type",
+    "buttons": "buttons",
+    "tags": "tags",
+    "sectionTitle": "section title",
+    "smallLabel": "small label",
+    "workTitle": "Untitled, 2026",
+    "monoLabel": "scroll · click to open",
+    "primary": "add work",
+    "secondary": "view portfolio",
+    "tertiary": "save",
+    "verified": "verified",
+    "paid": "€600 · paid",
+    "entryFee": "entry fee €25",
+    "unpaid": "unpaid",
+    "free": "free",
+    "wanted": "wanted"
+  },
+  "NotFound": {
+    "title": "page not found",
+    "back": "back to home"
+  }
+}

@@ -100,7 +100,7 @@ Later (Phase 6, optional): **Enter gallery** — an immersive exhibition mode on
 ## 6. Design system ("white cube")
 
 - Ground `#FAFAF8`, ink `#111111`, label `#5F5F5F`, secondary text `#3A3A3A`, lines `#E6E5E0`, chip border `#DAD9D4`, soft panel `#F1F0EB`, chip bg `#ECEBE6`.
-- **Faculty magenta `#D82E8A`: one per screen, only on the main action** (add work, sign, post, publish). White text on it.
+- **Faculty magenta `#D42B87`: one per screen, only on the main action** (add work, sign, post, publish). White text on it (4.67:1, WCAG AA; darkened from the original `#D82E8A`, which was 4.49:1).
 - Verified blue `#1F5FA8`, trust marks only. Pay tags: paid `#E3EEDF`/`#24502A`, entry fee `#F6E3D6`/`#7A3410`, unpaid/free `#ECEBE6`/`#111`. Wanted materials `#FBEAF3`/`#8E1A58`.
 - Type: **Instrument Sans** (400/500/600, italic for work titles). Section titles lowercase, 26–40 px, weight 600, letter-spacing −0.02 to −0.03em. Small caps labels: 11 px, uppercase, 0.08em tracking, `#5F5F5F`.
 - Buttons: pills, 44 px min height; primary magenta, secondary ink, tertiary outline.

@@ -1,0 +1,45 @@
+{
+  "Metadata": {
+    "title": "mostra · Belas-Artes ULisboa",
+    "description": "Trabalhos, oportunidades e projetos dos estudantes da Faculdade de Belas-Artes da Universidade de Lisboa."
+  },
+  "Brand": {
+    "facultyLogoAlt": "Faculdade de Belas-Artes da Universidade de Lisboa",
+    "poweredBy": "powered by",
+    "hyphaLogoAlt": "HYPHA"
+  },
+  "LocaleSwitcher": {
+    "label": "Idioma",
+    "pt": "Português",
+    "en": "English"
+  },
+  "Home": {
+    "name": "mostra",
+    "tagline": "Os trabalhos dos estudantes de Belas-Artes, num só lugar.",
+    "status": "Em construção · fase 0"
+  },
+  "Tokens": {
+    "title": "tokens do design system",
+    "colors": "cores",
+    "type": "tipografia",
+    "buttons": "botões",
+    "tags": "etiquetas",
+    "sectionTitle": "título de secção",
+    "smallLabel": "etiqueta pequena",
+    "workTitle": "Sem título, 2026",
+    "monoLabel": "scroll · clique para abrir",
+    "primary": "adicionar trabalho",
+    "secondary": "ver portfólio",
+    "tertiary": "guardar",
+    "verified": "verificado",
+    "paid": "€600 · pago",
+    "entryFee": "taxa de inscrição €25",
+    "unpaid": "não pago",
+    "free": "gratuito",
+    "wanted": "procura-se"
+  },
+  "NotFound": {
+    "title": "página não encontrada",
+    "back": "voltar ao início"
+  }
+}
