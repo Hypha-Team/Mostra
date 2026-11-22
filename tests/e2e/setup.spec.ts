@@ -66,7 +66,7 @@ test.describe("design system", () => {
   test("tokens page: magenta pill button, 44px min height", async ({ page }) => {
     await page.goto("/dev/tokens");
     const primary = page.getByTestId("btn-primary");
-    await expect(primary).toHaveCSS("background-color", "rgb(216, 46, 138)");
+    await expect(primary).toHaveCSS("background-color", "rgb(212, 43, 135)");
     await expect(primary).toHaveCSS("color", "rgb(255, 255, 255)");
     const box = await primary.boundingBox();
     expect(box!.height).toBeGreaterThanOrEqual(44);

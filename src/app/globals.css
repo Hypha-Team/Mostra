@@ -16,7 +16,7 @@
   --color-chip: #ecebe6;
 
   /* Faculty magenta: one per screen, main action only. White text on it. */
-  --color-magenta: #d82e8a;
+  --color-magenta: #d42b87; /* darkened from #D82E8A: white text 4.67:1 (WCAG AA) */
 
   /* Trust marks only */
   --color-verified: #1f5fa8;

@@ -13,7 +13,7 @@ const COLORS = [
   ["chip-border", "#DAD9D4", "bg-chip-border"],
   ["panel", "#F1F0EB", "bg-panel"],
   ["chip", "#ECEBE6", "bg-chip"],
-  ["magenta", "#D82E8A", "bg-magenta"],
+  ["magenta", "#D42B87", "bg-magenta"],
   ["verified", "#1F5FA8", "bg-verified"],
 ] as const;
 
