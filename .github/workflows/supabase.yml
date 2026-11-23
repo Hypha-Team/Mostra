@@ -37,7 +37,7 @@ jobs:
           done
       - run: supabase link --project-ref "$PROJECT_REF"
       # --remote targets the linked project; the password comes from SUPABASE_DB_PASSWORD.
-      - run: supabase db push --remote --include-seed
+      - run: supabase db push --remote --include-seed --yes
 
   production:
     name: push to production (no seed)
@@ -62,4 +62,4 @@ jobs:
           done
       - run: supabase link --project-ref "$PROJECT_REF"
       # --remote targets the linked project; the password comes from SUPABASE_DB_PASSWORD.
-      - run: supabase db push --remote
+      - run: supabase db push --remote --yes
