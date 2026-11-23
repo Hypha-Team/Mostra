@@ -12,6 +12,7 @@ test.describe("i18n", () => {
     await page.goto("/en");
     await expect(page.locator("html")).toHaveAttribute("lang", "en");
     await expect(page.getByText("The work of Belas-Artes students")).toBeVisible();
+    await expect(page.getByTestId("enter-university")).toHaveText("enter with your university email");
   });
 
   test("/pt redirects to /", async ({ page }) => {

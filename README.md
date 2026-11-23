@@ -20,9 +20,45 @@ pnpm dev
 | `pnpm lint` | ESLint (includes a no-hard-coded-UI-strings rule) |
 | `pnpm typecheck` | Next route types + `tsc --noEmit` |
 | `pnpm build` | production build |
-| `pnpm test:e2e` | Playwright at 1440×1000 and 390×844 (starts `pnpm start`; run `pnpm build` first) |
+| `pnpm test:e2e` | Playwright at 1440×1000 and 390×844, no backend needed (starts `pnpm start`; run `pnpm build` first) |
+| `pnpm test:e2e:auth` | magic-link flows against a local Supabase (`supabase start`), reading mail from its inbox |
+| `pnpm test:db` | RLS tests (pgTAP) on a throwaway local Postgres, when Docker is not available |
 
-CI (`.github/workflows/ci.yml`) runs all four on every pull request.
+CI (`.github/workflows/ci.yml`) runs two jobs on every pull request:
+
+- **checks** — lint, typecheck, build, Playwright (no backend).
+- **supabase** — `supabase start` (migrations + demo seed), `supabase test db` (RLS tests in `supabase/tests/`), then the auth e2e suite against that local stack.
+
+## Supabase
+
+| | project | gets |
+|---|---|---|
+| production | `mostra` (EU) | migrations on merge to `main` — never demo data |
+| preview | `mostra-preview` (EU) | migrations **and** `supabase/seed/demo.sql` on every pull request |
+
+`.github/workflows/supabase.yml` applies them with `supabase db push`. GitHub repository secrets:
+
+| secret | value |
+|---|---|
+| `SUPABASE_ACCESS_TOKEN` | personal access token (supabase.com → Account → Access Tokens) |
+| `SUPABASE_PROJECT_REF` | production project ref (`mostra`) |
+| `SUPABASE_DB_PASSWORD` | production database password |
+| `SUPABASE_PREVIEW_PROJECT_REF` | preview project ref (`mostra-preview`) |
+| `SUPABASE_PREVIEW_DB_PASSWORD` | preview database password |
+
+The demo seed refuses to run on a database that has real users and is not marked as a demo database
+(`private.environment`). Every demo row has `is_demo = true` and "(demo)" in its visible text.
+
+University email domains are data, not code (`universities.email_domains` / `staff_email_domains`).
+Until ULisboa confirms them they are `.invalid` placeholders, so nobody is auto-verified as a student or professor:
+
+```sql
+update public.universities
+   set email_domains = array['<student-domain>'], staff_email_domains = array['<staff-domain>']
+ where slug = 'belas-artes-ulisboa';
+```
+
+Admins come from `private.admin_emails` (see `supabase/migrations/*_reference_data.sql`).
 
 ## Environment variables
 
@@ -31,6 +67,14 @@ CI (`.github/workflows/ci.yml`) runs all four on every pull request.
 | `NEXT_PUBLIC_SUPABASE_URL` | Vercel: Production, Preview, Development | yes | `https://<ref>.supabase.co` |
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Vercel: Production, Preview, Development | yes* | `sb_publishable_…` |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | same | *alternative | legacy anon key; used only if the publishable key is missing |
+
+| `SMTP_HOST` | Vercel: Production, Preview | for app emails | `smtp.resend.com` |
+| `SMTP_PORT` | same | for app emails | `465` |
+| `SMTP_USER` | same | for app emails | `resend` |
+| `SMTP_PASSWORD` | same | for app emails | Resend API key (server-only, never `NEXT_PUBLIC_`) |
+| `EMAIL_FROM` | same | for app emails | e.g. `mostra <accesso@mail.example.pt>` on a domain verified in Resend |
+
+App notification emails (e.g. "your organisation was approved") go through this SMTP; Supabase's own SMTP only sends auth emails. Without these variables the email is skipped and logged, and the action still succeeds.
 
 The service-role / secret key is not used in Phase 0. When it arrives (Phase 1) it is server-only and never prefixed with `NEXT_PUBLIC_`.
 
@@ -48,8 +92,11 @@ messages/{pt,en}.json    all UI copy
 public/brand/            faculty logo, HYPHA ink logo
 docs/design/             design canvas screenshots
 docs/brand-archive/      assets not to be served (red HYPHA logo)
-supabase/migrations/     SQL migrations (from Phase 1)
-tests/e2e/               Playwright
+supabase/migrations/     schema, enums, RLS, reference data
+supabase/tests/          RLS tests (pgTAP)
+supabase/seed/demo.sql   demo data — preview and local only
+tests/e2e/               Playwright, no backend
+tests/e2e-auth/          Playwright, magic-link flows on a local Supabase
 ```
 
 `/dev/tokens` shows the design tokens on previews; it returns 404 in production.

@@ -1,0 +1,65 @@
+name: Supabase migrations
+
+# Pull requests  → migrations + demo seed on the PREVIEW project ("mostra-preview").
+# Merge to main  → migrations only on the PRODUCTION project ("mostra"). Never the demo seed.
+on:
+  pull_request:
+    paths: ["supabase/**", ".github/workflows/supabase.yml"]
+  push:
+    branches: [main]
+    paths: ["supabase/**", ".github/workflows/supabase.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  preview:
+    name: push to preview (with demo seed)
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    concurrency:
+      group: supabase-preview
+      cancel-in-progress: false
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_PREVIEW_DB_PASSWORD }}
+      PROJECT_REF: ${{ secrets.SUPABASE_PREVIEW_PROJECT_REF }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: supabase/setup-cli@v3
+        with:
+          version: latest
+      - name: Check secrets
+        run: |
+          for v in SUPABASE_ACCESS_TOKEN SUPABASE_DB_PASSWORD PROJECT_REF; do
+            if [ -z "${!v}" ]; then echo "::error::missing secret for $v (see README › Supabase migrations)"; exit 1; fi
+          done
+      - run: supabase link --project-ref "$PROJECT_REF"
+      # --remote targets the linked project; the password comes from SUPABASE_DB_PASSWORD.
+      - run: supabase db push --remote --include-seed --yes
+
+  production:
+    name: push to production (no seed)
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    concurrency:
+      group: supabase-production
+      cancel-in-progress: false
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+      PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: supabase/setup-cli@v3
+        with:
+          version: latest
+      - name: Check secrets
+        run: |
+          for v in SUPABASE_ACCESS_TOKEN SUPABASE_DB_PASSWORD PROJECT_REF; do
+            if [ -z "${!v}" ]; then echo "::error::missing secret for $v (see README › Supabase migrations)"; exit 1; fi
+          done
+      - run: supabase link --project-ref "$PROJECT_REF"
+      # --remote targets the linked project; the password comes from SUPABASE_DB_PASSWORD.
+      - run: supabase db push --remote --yes

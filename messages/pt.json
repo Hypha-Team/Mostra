@@ -14,9 +14,7 @@
     "en": "English"
   },
   "Home": {
-    "name": "mostra",
-    "tagline": "Os trabalhos dos estudantes de Belas-Artes, num só lugar.",
-    "status": "Em construção · fase 0"
+    "name": "mostra"
   },
   "Tokens": {
     "title": "tokens do design system",
@@ -41,5 +39,135 @@
   "NotFound": {
     "title": "página não encontrada",
     "back": "voltar ao início"
+  },
+  "Header": {
+    "home": "início",
+    "signIn": "entrar",
+    "account": "conta",
+    "admin": "admin"
+  },
+  "Welcome": {
+    "line": "Os trabalhos dos estudantes de Belas-Artes, num só lugar.",
+    "enterUniversity": "entrar com o email da universidade",
+    "imOrganisation": "sou uma galeria, estúdio ou organização"
+  },
+  "SignIn": {
+    "title": "entrar",
+    "intro": "Use o seu email de estudante ou docente. Enviamos-lhe um link de acesso — não há palavra-passe.",
+    "orgTitle": "entrar como organização",
+    "orgIntro": "Para galerias, estúdios, empresas e recrutadores. Depois de entrar, registe a sua organização: a faculdade aprova-a antes de poder publicar oportunidades ou enviar mensagens.",
+    "emailLabel": "email",
+    "nameLabel": "o seu nome",
+    "consent": "Li o <link>aviso de privacidade</link> e aceito o tratamento dos meus dados para usar a mostra.",
+    "submit": "enviar link de acesso",
+    "sending": "a enviar…",
+    "sentTitle": "verifique o seu email",
+    "sentBody": "Enviámos um link de acesso para {email}. Abra-o neste mesmo navegador.",
+    "toOrganisation": "É uma galeria, estúdio ou organização? Entre aqui.",
+    "toUniversity": "É estudante ou docente? Entre com o email da universidade.",
+    "errors": {
+      "invalidEmail": "Escreva um email válido.",
+      "consent": "Para continuar, aceite o aviso de privacidade.",
+      "notUniversity": "Este email não pertence a um domínio da universidade reconhecido. Se representa uma organização, use o acesso para organizações.",
+      "unavailable": "O serviço de acesso não está disponível. Tente mais tarde.",
+      "sendFailed": "Não foi possível enviar o email. Aguarde um pouco e tente de novo.",
+      "link": "O link expirou ou já foi usado. Peça um novo."
+    }
+  },
+  "Account": {
+    "title": "a minha conta",
+    "email": "email",
+    "roles": "perfis",
+    "noRoles": "sem perfil atribuído",
+    "university": "universidade",
+    "verified": "verificado",
+    "notVerified": "não verificado",
+    "signOut": "sair",
+    "loading": "a carregar…",
+    "demo": "demo",
+    "roleNames": {
+      "student": "estudante",
+      "alumni": "antigo aluno",
+      "professor": "docente",
+      "partner": "parceiro",
+      "admin": "admin"
+    },
+    "organisation": "organização",
+    "noOrganisation": "Ainda não registou a sua organização.",
+    "registerOrganisation": "registar organização",
+    "status": {
+      "pending": "a aguardar aprovação",
+      "approved": "aprovada",
+      "rejected": "não aprovada"
+    },
+    "pendingHelp": "A equipa da faculdade vai rever o pedido. Até lá não pode publicar oportunidades nem enviar mensagens.",
+    "adminLink": "aprovar organizações",
+    "signingOut": "a sair…"
+  },
+  "OrganisationForm": {
+    "title": "registar organização",
+    "intro": "Estes dados são revistos pela faculdade antes da aprovação.",
+    "name": "nome da organização",
+    "kind": "tipo",
+    "kinds": {
+      "gallery": "galeria",
+      "studio": "estúdio",
+      "company": "empresa",
+      "institution": "instituição",
+      "association": "associação"
+    },
+    "website": "site (opcional)",
+    "nif": "NIF (opcional)",
+    "submit": "enviar para aprovação",
+    "sending": "a enviar…",
+    "errors": {
+      "name": "Escreva o nome da organização.",
+      "kind": "Escolha o tipo.",
+      "website": "O site deve começar por https://",
+      "failed": "Não foi possível registar. Tente de novo."
+    }
+  },
+  "Admin": {
+    "title": "organizações",
+    "pending": "a aguardar aprovação",
+    "decided": "decididas recentemente",
+    "empty": "Nenhuma organização a aguardar.",
+    "approve": "aprovar",
+    "reject": "recusar",
+    "requested": "pedido em {date}",
+    "kind": "tipo",
+    "website": "site",
+    "nif": "NIF",
+    "status": {
+      "pending": "a aguardar",
+      "approved": "aprovada",
+      "rejected": "recusada"
+    },
+    "kinds": {
+      "gallery": "galeria",
+      "studio": "estúdio",
+      "company": "empresa",
+      "institution": "instituição",
+      "association": "associação"
+    },
+    "demo": "demo",
+    "approving": "a aprovar…",
+    "rejecting": "a recusar…",
+    "failed": "Não foi possível guardar a decisão. Tente de novo."
+  },
+  "Privacy": {
+    "title": "aviso de privacidade",
+    "draft": "Versão provisória, a rever pela faculdade antes do lançamento público.",
+    "p1": "A mostra guarda o seu email, o nome e os dados de perfil que escolher preencher, os trabalhos que publicar e as mensagens que enviar.",
+    "p2": "Usamos estes dados apenas para fazer funcionar a plataforma: mostrar trabalhos com a visibilidade que escolher, ligar estudantes a oportunidades e permitir o contacto entre pessoas segundo as regras da plataforma.",
+    "p3": "Não usamos cookies de rastreio. Poderá exportar ou apagar a sua conta a qualquer momento.",
+    "back": "voltar"
+  },
+  "Emails": {
+    "approvedSubject": "A sua organização foi aprovada na mostra",
+    "approvedGreeting": "Olá {name},",
+    "approvedBody": "A organização {org} foi aprovada pela Faculdade de Belas-Artes. Já pode publicar oportunidades e contactar estudantes na mostra.",
+    "approvedCta": "abrir a mostra",
+    "approvedFooter": "Recebeu este email porque registou esta organização na mostra."
   }
 }

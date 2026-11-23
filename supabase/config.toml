@@ -1,0 +1,48 @@
+# Supabase CLI config for LOCAL development and CI (`supabase start`, `supabase db start`, `supabase test db`).
+# Hosted projects (production "mostra", preview "mostra-preview") are configured in the dashboard;
+# only migrations travel there (see .github/workflows/supabase.yml).
+project_id = "mostra"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54322
+shadow_port = 54320
+major_version = 17
+
+[db.seed]
+enabled = true
+sql_paths = ["./seed/demo.sql"]
+
+[studio]
+enabled = false
+
+[local_smtp]
+enabled = true
+port = 54324
+# SMTP for the app's own notification emails in CI/local (src/lib/email/send.ts)
+smtp_port = 54325
+
+[storage]
+enabled = true
+
+[auth]
+enabled = true
+site_url = "http://localhost:3000"
+additional_redirect_urls = ["http://localhost:3000/**", "http://127.0.0.1:3000/**"]
+jwt_expiry = 3600
+enable_signup = true
+
+[auth.rate_limit]
+email_sent = 1000
+
+[auth.email]
+enabled = true
+double_confirm_changes = true
+enable_confirmations = false
+max_frequency = "1s"
