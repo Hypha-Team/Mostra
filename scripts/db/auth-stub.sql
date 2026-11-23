@@ -50,3 +50,25 @@ grant usage on schema public to anon, authenticated, service_role;
 alter default privileges in schema public grant all on tables to anon, authenticated, service_role;
 alter default privileges in schema public grant all on functions to anon, authenticated, service_role;
 alter default privileges in schema public grant all on sequences to anon, authenticated, service_role;
+
+-- Realtime pieces used by the migrations (broadcast from the database + channel authorization).
+create schema if not exists realtime;
+grant usage on schema realtime to anon, authenticated, service_role;
+create table if not exists realtime.messages (
+  id bigserial primary key,
+  topic text not null,
+  extension text not null default 'broadcast',
+  event text,
+  payload jsonb,
+  private boolean default false,
+  inserted_at timestamptz not null default now()
+);
+alter table realtime.messages enable row level security;
+grant select, insert on realtime.messages to anon, authenticated;
+create or replace function realtime.topic() returns text language sql stable as $$
+  select nullif(current_setting('realtime.topic', true), '')
+$$;
+create or replace function realtime.send(payload jsonb, event text, topic text, private boolean default true)
+returns void language sql as $$
+  insert into realtime.messages (topic, event, payload, private) values (topic, event, payload, private)
+$$;

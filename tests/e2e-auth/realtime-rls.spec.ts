@@ -34,41 +34,51 @@ async function partnerWithOrg(admin: SupabaseClient, who: string) {
   return { client, orgId: orgId as string };
 }
 
-async function listenToAllOrganisations(client: SupabaseClient) {
-  const seen: string[] = [];
+/** Tries to join an organisation's private channel; returns what it received and whether it joined. */
+async function listenToOrganisation(client: SupabaseClient, orgId: string) {
+  const seen: unknown[] = [];
   await client.realtime.setAuth();
-  const channel = client.channel(`all-orgs-${Math.random()}`, {
-    config: { postgres_changes_options: { wait: true } },
-  });
-  channel.on("postgres_changes", { event: "*", schema: "public", table: "organizations" }, (payload) => {
-    seen.push((payload.new as { id?: string })?.id ?? "?");
-  });
-  await new Promise<void>((resolve, reject) => {
-    channel.subscribe((status, err) => {
-      if (status === "SUBSCRIBED") resolve();
-      if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") reject(err ?? new Error(status));
+  const channel = client
+    .channel(`organization:${orgId}`, { config: { private: true } })
+    .on("broadcast", { event: "status" }, ({ payload }) => seen.push(payload));
+  const joined = await new Promise<boolean>((resolve) => {
+    channel.subscribe((status) => {
+      if (status === "SUBSCRIBED") resolve(true);
+      if (status === "CHANNEL_ERROR" || status === "TIMED_OUT" || status === "CLOSED") resolve(false);
     });
   });
+  return { seen, channel, joined };
+}
+
+/** Any subscriber to postgres_changes on organizations (no filter) — must receive nothing. */
+async function listenToTable(client: SupabaseClient) {
+  const seen: unknown[] = [];
+  await client.realtime.setAuth();
+  const channel = client
+    .channel(`table-${Math.random()}`)
+    .on("postgres_changes", { event: "*", schema: "public", table: "organizations" }, (p) => seen.push(p));
+  await new Promise<void>((resolve) => channel.subscribe(() => resolve()));
   return { seen, channel };
 }
 
-test("a partner only receives realtime updates for its own organization", async () => {
+test("organisation status updates reach only that organisation's members", async () => {
   const admin = createClient(url, serviceKey, { auth: { persistSession: false } });
   const a = await partnerWithOrg(admin, "a");
   const b = await partnerWithOrg(admin, "b");
 
-  const listenA = await listenToAllOrganisations(a.client);
-  const listenB = await listenToAllOrganisations(b.client);
+  const aOwn = await listenToOrganisation(a.client, a.orgId);
+  expect(aOwn.joined).toBe(true);
+  // B tries to listen to A's (soon approved, hence public) organisation channel
+  const bSpy = await listenToOrganisation(b.client, a.orgId);
+  const bTable = await listenToTable(b.client);
 
   const { error } = await admin.from("organizations").update({ status: "approved" }).eq("id", a.orgId);
   expect(error).toBeNull();
 
-  await expect.poll(() => listenA.seen, { timeout: 15_000 }).toContain(a.orgId);
-  // give B every chance to (wrongly) receive it
-  await new Promise((r) => setTimeout(r, 3000));
-  expect(listenB.seen).not.toContain(a.orgId);
-  expect(listenB.seen).toEqual([]);
+  await expect.poll(() => aOwn.seen, { timeout: 15_000 }).toContainEqual({ id: a.orgId, status: "approved" });
+  await new Promise((r) => setTimeout(r, 3000)); // give B every chance to (wrongly) receive it
+  expect(bSpy.seen).toEqual([]);
+  expect(bTable.seen).toEqual([]);
 
-  await a.client.removeChannel(listenA.channel);
-  await b.client.removeChannel(listenB.channel);
+  for (const c of [aOwn, bSpy, bTable]) await (c === aOwn ? a : b).client.removeChannel(c.channel);
 });

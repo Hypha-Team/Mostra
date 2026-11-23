@@ -6,8 +6,9 @@ import { createClient } from "@/lib/supabase/client";
 
 /**
  * Keeps the account page in sync with the user's organisations (CLAUDE.md › UX rules: updates
- * that concern the user arrive in real time). Realtime applies the subscriber's RLS, so a member
- * only ever receives changes to organisations they are allowed to read.
+ * that concern the user arrive in real time). Each organisation has a PRIVATE Realtime channel
+ * ("organization:<id>"): the database broadcasts status changes on it, and an RLS policy on
+ * realtime.messages lets only that organisation's members join.
  * Renders nothing visible; exposes its state as data attributes for tests.
  */
 export function OrganisationStatusLive({ orgIds }: { orgIds: string[] }) {
@@ -19,31 +20,30 @@ export function OrganisationStatusLive({ orgIds }: { orgIds: string[] }) {
   useEffect(() => {
     if (!key) return;
     const supabase = createClient();
-    let cancelled = false;
-    const channel = supabase.channel(`organisations:${key}`, {
-      config: { postgres_changes_options: { wait: true } },
-    });
-    for (const id of key.split(",")) {
-      channel.on(
-        "postgres_changes",
-        { event: "UPDATE", schema: "public", table: "organizations", filter: `id=eq.${id}` },
-        () => {
+    const ids = key.split(",");
+    const channels = ids.map((id) =>
+      supabase
+        .channel(`organization:${id}`, { config: { private: true } })
+        .on("broadcast", { event: "status" }, () => {
           setEvents((n) => n + 1);
           router.refresh();
-        },
-      );
-    }
+        }),
+    );
+    let cancelled = false;
+    let joined = 0;
     (async () => {
       await supabase.realtime.setAuth();
       if (cancelled) return;
-      channel.subscribe((s) => {
-        if (s === "SUBSCRIBED") setStatus("subscribed");
-        if (s === "CHANNEL_ERROR" || s === "TIMED_OUT") setStatus("error");
-      });
+      for (const channel of channels) {
+        channel.subscribe((s) => {
+          if (s === "SUBSCRIBED" && ++joined === channels.length) setStatus("subscribed");
+          if (s === "CHANNEL_ERROR" || s === "TIMED_OUT") setStatus("error");
+        });
+      }
     })();
     return () => {
       cancelled = true;
-      supabase.removeChannel(channel);
+      channels.forEach((c) => supabase.removeChannel(c));
     };
   }, [key, router]);
 

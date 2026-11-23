@@ -154,9 +154,28 @@ select lives_ok($$update public.organizations set status = 'approved' where name
 select tests.logout();
 select is((select approved_by from public.organizations where name = 'Studio Novo'), '00000000-0000-0000-0000-0000000000a4'::uuid, 'approval stamped with the admin');
 select isnt((select approved_at from public.organizations where name = 'Studio Novo'), null, 'approval time stamped');
+select ok(exists (
+  select 1 from realtime.messages
+  where topic = 'organization:' || (select id from public.organizations where name = 'Studio Novo')::text
+    and event = 'status' and payload ->> 'status' = 'approved' and private
+), 'status change is broadcast on the organization''s private channel');
 
 -- notification contacts and realtime
-select ok(exists (select 1 from pg_publication_tables where pubname = 'supabase_realtime' and tablename = 'organizations'), 'organizations are published to Realtime');
+select ok(not exists (select 1 from pg_publication_tables where pubname = 'supabase_realtime' and tablename = 'organizations'), 'organizations are not broadcast to every subscriber via postgres_changes');
+
+-- private channel "organization:<id>": only members may receive (realtime.messages RLS)
+select is(private.is_member_of_org_topic('organization:not-a-uuid'), false, 'malformed topic is refused');
+select tests.login('00000000-0000-0000-0000-0000000000a6');
+select set_config('realtime.topic', 'organization:00000000-0000-0000-0000-0000000000b2', true);
+select ok(private.is_member_of_org_topic((select realtime.topic())), 'member may join own organization channel');
+select set_config('realtime.topic', 'organization:00000000-0000-0000-0000-0000000000b1', true);
+select ok(not private.is_member_of_org_topic((select realtime.topic())), 'partner may not join another organization channel (even an approved one)');
+select tests.logout();
+select tests.login('00000000-0000-0000-0000-0000000000a1');
+select set_config('realtime.topic', 'organization:00000000-0000-0000-0000-0000000000b2', true);
+select ok(not private.is_member_of_org_topic((select realtime.topic())), 'student may not join an organization channel');
+select tests.logout();
+select set_config('realtime.topic', '', true);
 select tests.login('00000000-0000-0000-0000-0000000000a5');
 select throws_ok($$select * from public.organization_contacts('00000000-0000-0000-0000-0000000000b2')$$, '42501', null, 'non-admins cannot read organization contacts');
 select tests.logout();
