@@ -90,7 +90,7 @@ export function SignInForm({ kind }: { kind: "university" | "partner" }) {
           {t(`errors.${error}`)}
         </p>
       )}
-      <button type="submit" className="btn btn-primary self-start" disabled={pending}>
+      <button type="submit" className="btn btn-primary self-start" disabled={pending} aria-busy={pending || undefined}>
         {pending ? t("sending") : t("submit")}
       </button>
     </form>

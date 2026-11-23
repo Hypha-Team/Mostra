@@ -53,3 +53,13 @@ export async function magicLinkFor(email: string): Promise<string> {
 export async function mailCount(email: string): Promise<number> {
   return (await bodiesFor(email)).length;
 }
+
+/** Waits for an email to `email` whose body contains `text`. */
+export async function waitForMailContaining(email: string, text: string): Promise<void> {
+  await expect
+    .poll(async () => (await bodiesFor(email)).some((b) => b.includes(text)), {
+      timeout: 20_000,
+      message: `no email to ${email} containing "${text}"`,
+    })
+    .toBe(true);
+}

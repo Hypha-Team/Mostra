@@ -101,7 +101,8 @@
       "rejected": "não aprovada"
     },
     "pendingHelp": "A equipa da faculdade vai rever o pedido. Até lá não pode publicar oportunidades nem enviar mensagens.",
-    "adminLink": "aprovar organizações"
+    "adminLink": "aprovar organizações",
+    "signingOut": "a sair…"
   },
   "OrganisationForm": {
     "title": "registar organização",
@@ -149,7 +150,10 @@
       "institution": "instituição",
       "association": "associação"
     },
-    "demo": "demo"
+    "demo": "demo",
+    "approving": "a aprovar…",
+    "rejecting": "a recusar…",
+    "failed": "Não foi possível guardar a decisão. Tente de novo."
   },
   "Privacy": {
     "title": "aviso de privacidade",
@@ -158,5 +162,12 @@
     "p2": "Usamos estes dados apenas para fazer funcionar a plataforma: mostrar trabalhos com a visibilidade que escolher, ligar estudantes a oportunidades e permitir o contacto entre pessoas segundo as regras da plataforma.",
     "p3": "Não usamos cookies de rastreio. Poderá exportar ou apagar a sua conta a qualquer momento.",
     "back": "voltar"
+  },
+  "Emails": {
+    "approvedSubject": "A sua organização foi aprovada na mostra",
+    "approvedGreeting": "Olá {name},",
+    "approvedBody": "A organização {org} foi aprovada pela Faculdade de Belas-Artes. Já pode publicar oportunidades e contactar estudantes na mostra.",
+    "approvedCta": "abrir a mostra",
+    "approvedFooter": "Recebeu este email porque registou esta organização na mostra."
   }
 }

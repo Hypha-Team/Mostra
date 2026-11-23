@@ -68,6 +68,14 @@ Admins come from `private.admin_emails` (see `supabase/migrations/*_reference_da
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Vercel: Production, Preview, Development | yes* | `sb_publishable_…` |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | same | *alternative | legacy anon key; used only if the publishable key is missing |
 
+| `SMTP_HOST` | Vercel: Production, Preview | for app emails | `smtp.resend.com` |
+| `SMTP_PORT` | same | for app emails | `465` |
+| `SMTP_USER` | same | for app emails | `resend` |
+| `SMTP_PASSWORD` | same | for app emails | Resend API key (server-only, never `NEXT_PUBLIC_`) |
+| `EMAIL_FROM` | same | for app emails | e.g. `mostra <accesso@mail.example.pt>` on a domain verified in Resend |
+
+App notification emails (e.g. "your organisation was approved") go through this SMTP; Supabase's own SMTP only sends auth emails. Without these variables the email is skipped and logged, and the action still succeeds.
+
 The service-role / secret key is not used in Phase 0. When it arrives (Phase 1) it is server-only and never prefixed with `NEXT_PUBLIC_`.
 
 `GET /api/health` reports `{"supabase":"ok" | "missing_env" | "unreachable"}` without exposing any value.

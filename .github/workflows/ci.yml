@@ -87,6 +87,10 @@ jobs:
             echo "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=${PUBLISHABLE_KEY:-$ANON_KEY}"
             echo "SUPABASE_DB_URL=$DB_URL"
             echo "MAILPIT_URL=${MAILPIT_URL:-http://127.0.0.1:54324}"
+            echo "SUPABASE_SERVICE_ROLE_KEY=${SECRET_KEY:-$SERVICE_ROLE_KEY}"
+            echo "SMTP_HOST=127.0.0.1"
+            echo "SMTP_PORT=54325"
+            echo "EMAIL_FROM=mostra <noreply@mostra.test>"
           } >> "$GITHUB_ENV"
 
       - name: Test fixtures (university domains, test admin)

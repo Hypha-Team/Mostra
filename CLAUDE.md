@@ -192,3 +192,14 @@ Stop after each phase, open a PR, and list what was verified on the Vercel previ
 - Lawyer review of contract templates; choice of e-signature provider.
 - Real works and consent from students.
 - Who in the faculty acts as admin (careers office).
+
+---
+
+## 10. Regole UX (UX rules)
+
+These apply to every screen, in every phase. A change that breaks one is not finished.
+
+- **Every button and form has a loading state.** While an action runs, its button is disabled and shows a "…ing" label (`a enviar…`, `a aprovar…`, `sending…`); other buttons in the same form are disabled too. Use `src/components/SubmitButton.tsx` (or `useActionState`'s `pending`). Errors appear next to the form, and nothing the user typed is lost.
+- **After every action the page shows the result immediately, without reloading.** Server Actions end with `refresh()` (or a redirect to the page that shows the result); the user never has to reload to see what they just did.
+- **Updates that concern the user arrive in real time.** When something changes for a user because of someone else (organisation approved, application status, new message…), their open page updates by itself through Supabase Realtime, which respects RLS: a user only receives rows they are allowed to read. Notify by email as well when the change matters outside the app.
+- Each of these is covered by a Playwright test: loading label visible and button disabled during the action, result visible without a reload, live update received by the other user.

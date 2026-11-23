@@ -1,5 +1,7 @@
 import { Suspense } from "react";
 import { getLocale, getTranslations } from "next-intl/server";
+import { OrganisationStatusLive } from "@/components/auth/OrganisationStatusLive";
+import { SubmitButton } from "@/components/SubmitButton";
 import { Link, redirect } from "@/i18n/navigation";
 import { signOut } from "@/lib/auth/actions";
 import { getCurrentUser, isAdmin } from "@/lib/auth/current-user";
@@ -24,6 +26,11 @@ async function AccountDetails() {
   const u = user!;
   const roles = u.profile?.roles ?? [];
   const isPartner = roles.includes("partner");
+  // A partner is verified through its organisation, not its email (CLAUDE.md §2).
+  const partnerOnly = isPartner && !roles.some((r) => r !== "partner");
+  const verified = partnerOnly
+    ? u.organizations.some((o) => o.status === "approved")
+    : !!u.profile?.verified;
 
   return (
     <div className="flex flex-col gap-10" data-testid="account">
@@ -39,12 +46,16 @@ async function AccountDetails() {
               {t(`roleNames.${r}`)}
             </span>
           ))}
-          {u.profile?.verified ? (
+          {verified ? (
             <span className="chip border border-chip-border text-verified" data-testid="verified">
               {t("verified")}
             </span>
           ) : (
-            <span className="chip border border-chip-border text-label">{t("notVerified")}</span>
+            !partnerOnly && (
+              <span className="chip border border-chip-border text-label" data-testid="not-verified">
+                {t("notVerified")}
+              </span>
+            )
           )}
           {u.profile?.is_demo && <span className="chip bg-chip">{t("demo")}</span>}
         </dd>
@@ -71,6 +82,7 @@ async function AccountDetails() {
             </div>
           ) : (
             <ul className="flex flex-col gap-3">
+              <OrganisationStatusLive orgIds={u.organizations.map((o) => o.id)} />
               {u.organizations.map((o) => (
                 <li key={o.id} className="flex flex-col gap-1 rounded-md bg-panel px-4 py-3" data-testid="organisation">
                   <span className="font-medium">{o.name}</span>
@@ -93,9 +105,9 @@ async function AccountDetails() {
         )}
         <form action={signOut}>
           <input type="hidden" name="locale" value={locale} />
-          <button type="submit" className="btn btn-tertiary">
+          <SubmitButton className="btn btn-tertiary" pendingLabel={t("signingOut")}>
             {t("signOut")}
-          </button>
+          </SubmitButton>
         </form>
       </div>
     </div>

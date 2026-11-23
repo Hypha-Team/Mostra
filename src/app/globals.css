@@ -114,6 +114,11 @@
   .btn:hover {
     opacity: 0.88;
   }
+  /* Loading / unavailable state (CLAUDE.md › UX rules) */
+  .btn:disabled {
+    opacity: 0.6;
+    cursor: wait;
+  }
   .btn-primary {
     background-color: var(--color-magenta);
     color: #ffffff;

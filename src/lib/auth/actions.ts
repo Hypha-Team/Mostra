@@ -1,7 +1,10 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { refresh } from "next/cache";
 import { redirect } from "next/navigation";
+import { after } from "next/server";
+import { getTranslations } from "next-intl/server";
+import { escapeHtml, sendEmail } from "@/lib/email/send";
 import { routing } from "@/i18n/routing";
 import { getSupabasePublicEnv } from "@/lib/supabase/env";
 import { createClient } from "@/lib/supabase/server";
@@ -117,13 +120,66 @@ export async function registerOrganisation(
   redirect(localePath(locale, "/account"));
 }
 
+export type ReviewState = { status: "idle" } | { status: "error" } | { status: "done"; decision: "approved" | "rejected" };
+
 /** Admin decision. RLS + the status trigger reject non-admins regardless of the UI. */
-export async function reviewOrganisation(formData: FormData) {
+export async function reviewOrganisation(_prev: ReviewState, formData: FormData): Promise<ReviewState> {
   const id = String(formData.get("id") ?? "");
   const decision = String(formData.get("decision") ?? "");
-  if (!id || (decision !== "approved" && decision !== "rejected")) return;
+  if (!id || (decision !== "approved" && decision !== "rejected")) return { status: "error" };
 
   const supabase = await createClient();
-  await supabase.from("organizations").update({ status: decision }).eq("id", id);
-  revalidatePath("/[locale]/admin/organizations", "page");
+  const { data, error } = await supabase
+    .from("organizations")
+    .update({ status: decision })
+    .eq("id", id)
+    .select("id, name")
+    .returns<{ id: string; name: string }[]>();
+  if (error || !data?.length) {
+    if (error) console.error("review organisation failed", { code: error.code, message: error.message });
+    return { status: "error" };
+  }
+
+  if (decision === "approved") {
+    const { data: rawContacts } = await supabase.rpc("organization_contacts", { p_org: id });
+    const contacts = (rawContacts ?? []) as { email: string; locale: string; full_name: string | null }[];
+    const origin = await requestOrigin();
+    const orgName = data[0].name;
+    // Send after the response so the admin sees the result immediately.
+    after(async () => {
+      for (const c of contacts) {
+        await sendApprovedEmail({ ...c, orgName, origin });
+      }
+    });
+  }
+
+  refresh();
+  return { status: "done", decision };
+}
+
+async function sendApprovedEmail(c: {
+  email: string;
+  locale: string;
+  full_name: string | null;
+  orgName: string;
+  origin: string;
+}) {
+  const locale = c.locale === "en" ? "en" : "pt";
+  const t = await getTranslations({ locale, namespace: "Emails" });
+  const url = `${c.origin}${locale === "en" ? "/en" : ""}/account`;
+  const name = c.full_name || c.email;
+  const greeting = t("approvedGreeting", { name });
+  const body = t("approvedBody", { org: c.orgName });
+  await sendEmail({
+    to: c.email,
+    subject: t("approvedSubject"),
+    text: `${greeting}\n\n${body}\n\n${t("approvedCta")}: ${url}\n\n${t("approvedFooter")}`,
+    html: `<div style="font-family:Helvetica,Arial,sans-serif;color:#111;background:#FAFAF8;padding:32px">
+<p style="font-size:22px;font-weight:600;letter-spacing:-0.02em;margin:0 0 24px">mostra</p>
+<p>${escapeHtml(greeting)}</p>
+<p>${escapeHtml(body)}</p>
+<p style="margin:28px 0"><a href="${escapeHtml(url)}" style="background:#111;color:#FAFAF8;padding:12px 20px;border-radius:999px;text-decoration:none">${escapeHtml(t("approvedCta"))}</a></p>
+<p style="font-size:12px;color:#5F5F5F">${escapeHtml(t("approvedFooter"))}</p>
+</div>`,
+  });
 }

@@ -101,7 +101,8 @@
       "rejected": "not approved"
     },
     "pendingHelp": "The faculty team will review the request. Until then you cannot post opportunities or send messages.",
-    "adminLink": "approve organisations"
+    "adminLink": "approve organisations",
+    "signingOut": "signing out…"
   },
   "OrganisationForm": {
     "title": "register organisation",
@@ -149,7 +150,10 @@
       "institution": "institution",
       "association": "association"
     },
-    "demo": "demo"
+    "demo": "demo",
+    "approving": "approving…",
+    "rejecting": "rejecting…",
+    "failed": "Could not save the decision. Try again."
   },
   "Privacy": {
     "title": "privacy notice",
@@ -158,5 +162,12 @@
     "p2": "We use this data only to run the platform: showing works with the visibility you choose, connecting students with opportunities and letting people contact each other under the platform's rules.",
     "p3": "We use no tracking cookies. You will be able to export or delete your account at any time.",
     "back": "back"
+  },
+  "Emails": {
+    "approvedSubject": "Your organisation was approved on mostra",
+    "approvedGreeting": "Hello {name},",
+    "approvedBody": "{org} was approved by the Faculty of Fine Arts. You can now post opportunities and contact students on mostra.",
+    "approvedCta": "open mostra",
+    "approvedFooter": "You received this email because you registered this organisation on mostra."
   }
 }

@@ -155,5 +155,17 @@ select tests.logout();
 select is((select approved_by from public.organizations where name = 'Studio Novo'), '00000000-0000-0000-0000-0000000000a4'::uuid, 'approval stamped with the admin');
 select isnt((select approved_at from public.organizations where name = 'Studio Novo'), null, 'approval time stamped');
 
+-- notification contacts and realtime
+select ok(exists (select 1 from pg_publication_tables where pubname = 'supabase_realtime' and tablename = 'organizations'), 'organizations are published to Realtime');
+select tests.login('00000000-0000-0000-0000-0000000000a5');
+select throws_ok($$select * from public.organization_contacts('00000000-0000-0000-0000-0000000000b2')$$, '42501', null, 'non-admins cannot read organization contacts');
+select tests.logout();
+select tests.login_anon();
+select throws_ok($$select * from public.organization_contacts('00000000-0000-0000-0000-0000000000b2')$$, '42501', null, 'visitors cannot read organization contacts');
+select tests.logout();
+select tests.login('00000000-0000-0000-0000-0000000000a4');
+select is((select array_agg(email) from public.organization_contacts('00000000-0000-0000-0000-0000000000b2')), array['estudio@mail.test'], 'admin gets the members'' emails');
+select tests.logout();
+
 select * from finish();
 rollback;

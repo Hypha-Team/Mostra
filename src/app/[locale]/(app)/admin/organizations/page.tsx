@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { getFormatter, getLocale, getTranslations } from "next-intl/server";
 import { redirect } from "@/i18n/navigation";
-import { reviewOrganisation } from "@/lib/auth/actions";
+import { PendingOrganisation } from "@/components/admin/PendingOrganisation";
 import { getCurrentUser, isAdmin } from "@/lib/auth/current-user";
 import { createClient } from "@/lib/supabase/server";
 
@@ -60,39 +60,18 @@ async function AdminList() {
         {pending.length === 0 && <p className="text-label">{t("empty")}</p>}
         <ul className="flex flex-col gap-3">
           {pending.map((o) => (
-            <li
+            <PendingOrganisation
               key={o.id}
-              className="flex flex-col gap-3 rounded-md border border-line bg-white px-4 py-4 sm:flex-row sm:items-center sm:justify-between"
-              data-testid="pending-organisation"
-            >
-              <div className="flex flex-col gap-1">
-                <span className="font-medium">
-                  {o.name} {o.is_demo && <span className="chip ml-2 bg-chip">{t("demo")}</span>}
-                </span>
-                <span className="text-sm text-secondary">
-                  {t(`kinds.${o.kind}`)}
-                  {o.website && <> · {o.website}</>}
-                  {o.nif && (
-                    <>
-                      {" "}
-                      · {t("nif")} {o.nif}
-                    </>
-                  )}
-                </span>
-                <span className="text-xs text-label">
-                  {t("requested", { date: format.dateTime(new Date(o.created_at), { dateStyle: "medium" }) })}
-                </span>
-              </div>
-              <form action={reviewOrganisation} className="flex gap-2">
-                <input type="hidden" name="id" value={o.id} />
-                <button type="submit" name="decision" value="approved" className="btn btn-secondary">
-                  {t("approve")}
-                </button>
-                <button type="submit" name="decision" value="rejected" className="btn btn-tertiary">
-                  {t("reject")}
-                </button>
-              </form>
-            </li>
+              org={{
+                id: o.id,
+                name: o.name,
+                kind: o.kind,
+                website: o.website,
+                nif: o.nif,
+                is_demo: o.is_demo,
+                requestedOn: format.dateTime(new Date(o.created_at), { dateStyle: "medium" }),
+              }}
+            />
           ))}
         </ul>
       </section>

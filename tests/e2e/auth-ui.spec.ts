@@ -43,6 +43,21 @@ test("sign-in: labelled fields, consent required, email validated", async ({ pag
   await expect(page.getByTestId("form-error")).toHaveText("To continue, accept the privacy notice.");
 });
 
+test("sign-in button shows a loading state while sending", async ({ page }) => {
+  await page.route("**/en/sign-in", async (route) => {
+    if (route.request().method() === "POST") await new Promise((r) => setTimeout(r, 1200));
+    await route.continue();
+  });
+  await page.goto("/en/sign-in");
+  await page.getByLabel("email").fill("someone@example.com");
+  await page.getByLabel(/privacy notice/).check();
+  await page.getByRole("button", { name: "send sign-in link" }).click();
+  const busy = page.getByRole("button", { name: "sending…" });
+  await expect(busy).toBeDisabled();
+  await expect(busy).toHaveAttribute("aria-busy", "true");
+  await expect(page.getByTestId("form-error")).toBeVisible();
+});
+
 test("organisation sign-in asks for a name and links back", async ({ page }) => {
   await page.goto("/sign-in/organisation");
   await expect(page.getByRole("heading", { level: 1, name: "entrar como organização" })).toBeVisible();
