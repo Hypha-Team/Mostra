@@ -40,7 +40,7 @@ enable_signup = true
 email_sent = 1000
 
 [auth.email]
-enable_signup = true
+enabled = true
 double_confirm_changes = true
 enable_confirmations = false
 max_frequency = "1s"

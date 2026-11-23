@@ -35,8 +35,9 @@ jobs:
           for v in SUPABASE_ACCESS_TOKEN SUPABASE_DB_PASSWORD PROJECT_REF; do
             if [ -z "${!v}" ]; then echo "::error::missing secret for $v (see README › Supabase migrations)"; exit 1; fi
           done
-      - run: supabase link --project-ref "$PROJECT_REF" --password "$SUPABASE_DB_PASSWORD"
-      - run: supabase db push --include-seed --password "$SUPABASE_DB_PASSWORD"
+      - run: supabase link --project-ref "$PROJECT_REF"
+      # --remote targets the linked project; the password comes from SUPABASE_DB_PASSWORD.
+      - run: supabase db push --remote --include-seed
 
   production:
     name: push to production (no seed)
@@ -59,5 +60,6 @@ jobs:
           for v in SUPABASE_ACCESS_TOKEN SUPABASE_DB_PASSWORD PROJECT_REF; do
             if [ -z "${!v}" ]; then echo "::error::missing secret for $v (see README › Supabase migrations)"; exit 1; fi
           done
-      - run: supabase link --project-ref "$PROJECT_REF" --password "$SUPABASE_DB_PASSWORD"
-      - run: supabase db push --password "$SUPABASE_DB_PASSWORD"
+      - run: supabase link --project-ref "$PROJECT_REF"
+      # --remote targets the linked project; the password comes from SUPABASE_DB_PASSWORD.
+      - run: supabase db push --remote
